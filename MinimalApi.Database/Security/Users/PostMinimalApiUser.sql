@@ -10,5 +10,5 @@ GRANT VIEW DEFINITION ON CERTIFICATE::[PostConntentCertificate] TO PostMinimalAp
 GO
 GRANT CONTROL ON CERTIFICATE::[PostConntentCertificate] TO PostMinimalApiUser;
 GO
-EXEC sp_addrolemember 'db_accessadmin', 'PostMinimalApiUser';
+ALTER ROLE [db_accessadmin] ADD MEMBER [PostMinimalApiUser];
 GO

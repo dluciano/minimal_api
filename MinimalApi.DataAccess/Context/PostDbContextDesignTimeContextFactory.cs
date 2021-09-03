@@ -9,9 +9,9 @@ namespace MinimalApi.DataAccess.Context
         public PostDbContext CreateDbContext(string[] args)
         {
             var options = new DbContextOptionsBuilder<PostDbContext>();
-            options.UseSqlServer("Server=.;Database=MinimalApi.Database;Integrated Security=true;MultipleActiveResultSets=true");
+            options.UseSqlServer("Server=.;Database=MinimalApi.Local;Integrated Security=true;MultipleActiveResultSets=true");
             return new PostDbContext(new DoNothingInterceptor(), options.Options);
-        }        
+        }
     }
     internal sealed class DoNothingInterceptor : DbConnectionInterceptor, ISetSessionContextToUserSubIdInterceptor { }
 }

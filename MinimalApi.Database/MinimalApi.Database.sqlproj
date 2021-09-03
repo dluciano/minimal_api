@@ -89,6 +89,6 @@
     <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Snapshots\20210811153303_CreateDataAccess.dacpac" />
+    <None Include="Snapshots\20210903231854_Posts_CreateDatabase.dacpac" />
   </ItemGroup>
 </Project>

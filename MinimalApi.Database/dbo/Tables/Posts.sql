@@ -1,9 +1,12 @@
-﻿CREATE TABLE [Posts] (
-    [PostId] uniqueidentifier NOT NULL,
-    [Title] nvarchar(512) NOT NULL,
-    [Content] nvarchar(max) NULL,
-    [CreatedBySub] nvarchar(255) NOT NULL,
-    [CreatedOn] datetimeoffset NOT NULL,
-    CONSTRAINT [PK_Posts] PRIMARY KEY ([PostId])
+﻿CREATE TABLE [dbo].[Posts] (
+    [PostId]       UNIQUEIDENTIFIER   NOT NULL,
+    [Title]        NVARCHAR (512)     NOT NULL,
+    [Content]      NVARCHAR (MAX)     NULL,
+    [CreatedBySub] NVARCHAR (255)     NOT NULL,
+    [CreatedOn]    DATETIMEOFFSET (7) NOT NULL,
+    [RowVersion]   ROWVERSION         NOT NULL,
+    CONSTRAINT [PK_Posts] PRIMARY KEY CLUSTERED ([PostId] ASC)
 );
+
+
 GO
