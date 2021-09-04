@@ -22,9 +22,13 @@ namespace MinimalApi.DataAccess
                 createPostDto.Content,
                 createPostDto.UserSub,
                 DateTimeOffset.UtcNow,
-                Array.Empty<byte>());
+                createPostDto.RowVersion);
 
-            var existingPost = await _postDbContext.Posts.AsNoTracking().AnyAsync(p => p.PostId == createPostDto.Id, cancellationToken).ConfigureAwait(false);
+            var existingPost = await _postDbContext.Posts
+                .AsNoTracking()
+                .AnyAsync(p => p.PostId == createPostDto.Id, cancellationToken)
+                .ConfigureAwait(false);
+
             if (existingPost)
             {
                 _postDbContext.Attach(post);
@@ -62,7 +66,7 @@ namespace MinimalApi.DataAccess
             var post = await _postDbContext.Posts
                 .AsNoTracking()
                 .Where(p => p.PostId == id)
-                .Select(p => new { p.PostId, p.Title, p.Content, p.CreatedOn })
+                .Select(p => new { p.PostId, p.Title, p.Content, p.CreatedOn, p.RowVersion })
                 .FirstOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
 
@@ -71,7 +75,7 @@ namespace MinimalApi.DataAccess
                 return default;
             }
 
-            var dto = new PostDto(post.PostId, post.Title, post.Content, post.CreatedOn);
+            var dto = new PostDto(post.PostId, post.Title, post.Content, post.CreatedOn, post.RowVersion);
 
             return dto;
         }

@@ -14,12 +14,9 @@ using MinimalApi.Models.Responses;
 using MinimalApi.Models.Requests.Validators;
 using MinimalApi.Models;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 var postConnectionString = builder.Configuration["ConnectionStrings:PostContext"];
-
 
 var services = new ServiceCollection();
 services.ConfigureMinimalApiDataAccessServices(postConnectionString);
@@ -162,7 +159,7 @@ app.MapGet("/posts/{id}", [Authorize] async (
     {
         var host = $"{httpRequest.Scheme}://{httpRequest.Host}{httpRequest.PathBase}";
 
-        var response = new PostResponse(new Uri($"{host}/posts/{id}"), new(post.Title, post.Content, post.CreatedOn));
+        var response = new PostResponse(new Uri($"{host}/posts/{id}"), new(post.Title, post.Content, post.CreatedOn, post.RowVersion));
         return Results.Ok(response);
     }
 

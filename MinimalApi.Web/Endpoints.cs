@@ -32,7 +32,7 @@ internal static class Endpoints
 
               // Map Request to DTO
               var userSub = userSubProvider.GetCurrentUserSub();
-              var createPostDto = new UpsertPostDto(postId, request.Title, request.Content, userSub);
+              var createPostDto = new UpsertPostDto(postId, request.Title, request.Content, request.RowVersion ?? Array.Empty<byte>(), userSub);
 
               // Execute action
               await postRepository.UpsertAsync(createPostDto, cancellationToken).ConfigureAwait(false);
