@@ -153,7 +153,7 @@ app.MapGet("/posts/{id}", [Authorize] async (
     HttpRequest httpRequest,
     CancellationToken cancellationToken) =>
 {
-    var dto = await postRepository.GetById(id, cancellationToken).ConfigureAwait(false);
+    var dto = await postRepository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
 
     if (dto is PostDto post)
     {
@@ -166,19 +166,31 @@ app.MapGet("/posts/{id}", [Authorize] async (
     return Results.NotFound();
 });
 
-app.MapPost("/posts/{postId}", async (
-               [FromRoute] Guid postId,
-               [FromBody] UpsertPostRequest request,
-               [FromServices] IValidator<UpsertPostRequest> validator,
-               IPostRepository postRepository,
-               IUserSubProvider userSubProvider,
-               HttpRequest httpRequest,
-               CancellationToken cancellationToken) =>
+app.MapPut("/posts/{postId}", [Authorize] async (
+    [FromRoute] Guid postId,
+    [FromBody] UpsertPostRequest request,
+    [FromServices] IValidator<UpsertPostRequest> validator,
+    IPostRepository postRepository,
+    IUserSubProvider userSubProvider,
+    HttpRequest httpRequest,
+    CancellationToken cancellationToken) =>
 {
-    var (isValid, validationProblem, responseValue) = await Endpoints.CreatePost(postId, request, validator, postRepository, userSubProvider, httpRequest, cancellationToken).ConfigureAwait(false);
+    var (isValid, validationProblem, responseValue) = await Endpoints.UpsertPost(postId, request, validator, postRepository, userSubProvider, httpRequest, cancellationToken).ConfigureAwait(false);
     if (!isValid && validationProblem is not null) return validationProblem.ToValidationProblemResult();
     if (isValid && responseValue is not null) return Results.Created(responseValue.Link.ToString(), responseValue);
     throw new Exception("unknow error");
+});
+
+app.MapDelete("/posts/{postId}", [Authorize] async (
+    [FromRoute] Guid postId,
+     [FromBody] DeletePostRequest request,
+    IPostRepository postRepository,
+    CancellationToken cancellationToken) =>
+{
+    var postExists = await postRepository.ExistsIdAsync(postId, cancellationToken).ConfigureAwait(false);
+    if (!postExists) return Results.NotFound();
+    await postRepository.DeleteAsync(new(postId, request.RowVersion), cancellationToken);
+    return Results.NoContent();
 });
 
 await app.RunAsync().ConfigureAwait(false);

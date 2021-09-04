@@ -24,6 +24,7 @@
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <TargetFrameworkProfile />
     <GenerateCreateScript>False</GenerateCreateScript>
+    <DacVersion>1.0.0.1</DacVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -90,5 +91,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Snapshots\20210903231854_Posts_CreateDatabase.dacpac" />
+    <None Include="Snapshots\20210904001930_Posts_AddIsActive.dacpac" />
   </ItemGroup>
 </Project>

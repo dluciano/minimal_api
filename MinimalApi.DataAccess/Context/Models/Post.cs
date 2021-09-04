@@ -3,7 +3,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MinimalApi.DataAccess.Context.Models
 {
-    record Post(Guid PostId, string Title, string? Content, string CreatedBySub, DateTimeOffset CreatedOn, byte[] RowVersion)
+    record Post(
+        Guid PostId, 
+        string Title, 
+        string? Content, 
+        string CreatedBySub, 
+        DateTimeOffset CreatedOn, 
+        byte[] RowVersion,
+        bool IsActive)
     {
         public class PostEntityConf : IEntityTypeConfiguration<Post>
         {

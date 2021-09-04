@@ -11,11 +11,11 @@ using Xunit;
 
 namespace MinimalApi.Tests;
 
-public sealed class CreatePostEndpointTests
+public sealed class UpsertPostEndpointTests
 {
     [Theory]
     [AutoDomainData(typeof(ApiCustomizations))]
-    internal async Task WhenCreateAValidPost(
+    internal async Task WhenUpsertAValidPost(
         UpsertPostRequest request,
         IValidator<UpsertPostRequest> validator,
         IPostRepository postRepository,
@@ -27,11 +27,11 @@ public sealed class CreatePostEndpointTests
         validator.ValidateAsync(request, CancellationToken.None).Returns(Task.FromResult(new ValidationResult() { }));
         httpRequest.Path = $"/posts/{expectedId}";
         var expectedUri = $"{httpRequest.Scheme}://{httpRequest.Host}{httpRequest.PathBase}{httpRequest.Path}";
-        var expectedResult = new PostCreatedResponse(new Uri(expectedUri), new(expectedId, new Uri(expectedUri)));
+        var expectedResult = new PostUpsertedResponse(new Uri(expectedUri), new(expectedId, new Uri(expectedUri)));
         postRepository.UpsertAsync(default, CancellationToken.None).ReturnsForAnyArgs(Task.FromResult(expectedId));
 
         // Act
-        var (IsValid, ValidationProblem, ResponseValue) = await Endpoints.CreatePost(expectedId, request, validator, postRepository, userSubProvider, httpRequest, CancellationToken.None);
+        var (IsValid, ValidationProblem, ResponseValue) = await Endpoints.UpsertPost(expectedId, request, validator, postRepository, userSubProvider, httpRequest, CancellationToken.None);
 
         // Assert
         IsValid.ShouldBeTrue();

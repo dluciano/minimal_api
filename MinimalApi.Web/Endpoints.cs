@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
 using MinimalApi.DataAccess;
 using MinimalApi.DataAccess.Context;
 using MinimalApi.DataAccess.Dtos;
@@ -17,7 +16,7 @@ internal static class Endpoints
         IUserSubProvider,
         HttpRequest,
         CancellationToken,
-        Task<(bool IsValid, ValidationProblem? ValidationProblem, PostCreatedResponse? ResponseValue)>> CreatePost =[Authorize] async (
+        Task<(bool IsValid, ValidationProblem? ValidationProblem, PostUpsertedResponse? ResponseValue)>> UpsertPost = async (
             Guid postId,
             UpsertPostRequest request,
             IValidator<UpsertPostRequest> validator,
@@ -32,14 +31,14 @@ internal static class Endpoints
 
               // Map Request to DTO
               var userSub = userSubProvider.GetCurrentUserSub();
-              var createPostDto = new UpsertPostDto(postId, request.Title, request.Content, request.RowVersion ?? Array.Empty<byte>(), userSub);
+              var upsertResponse = new UpsertPostDto(postId, request.Title, request.Content, request.RowVersion ?? Array.Empty<byte>(), userSub);
 
               // Execute action
-              await postRepository.UpsertAsync(createPostDto, cancellationToken).ConfigureAwait(false);
+              await postRepository.UpsertAsync(upsertResponse, cancellationToken).ConfigureAwait(false);
 
               // Map Response Dto to Api Response
               var uri = new Uri($"{httpRequest.Scheme}://{httpRequest.Host}{httpRequest.PathBase}{httpRequest.Path}");
-              var response = new PostCreatedResponse(uri, new(postId, uri));
+              var response = new PostUpsertedResponse(uri, new(postId, uri));
 
               return (true, default, response);
           };
